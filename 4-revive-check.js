@@ -8,6 +8,8 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=torn.com
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @downloadURL  https://github.com/exca314/4---Revive-Check/blob/main/4-revive-check.js
+// @updateURL    https://github.com/exca314/4---Revive-Check/blob/main/4-revive-check.js
 // ==/UserScript==
 
 (function() {
