@@ -17,15 +17,15 @@
     let failCounter = 0;
 
     //let a = new Audio("https://www.torn.com/casino/wof/sound/win-1.ogg");
-    //let a = new Audio("https://www.torn.com/casino/highlow/audio/cashin.ogg");
+    let a = new Audio("https://www.torn.com/casino/highlow/audio/cashin.ogg");
     //let a = new Audio("https://www.torn.com/casino/keno/audio/roundwon.ogg");
-    let a = new Audio("https://www.torn.com/casino/blackjack/audio/win.ogg");
+    //let a = new Audio("https://www.torn.com/casino/blackjack/audio/win.ogg");
 
     $('body').append('<input type="button" value="Revive" id="TitleButton">');
     $("#TitleButton").css("position", "fixed").css("top", 300).css("right", 0).css("height","70px").css("width","120px").css("border-radius", "10px 0px 0px 10px").css("border-width","thick").css("box-shadow","0px 0px 5px -1px").css("font-size","13px");
 
     $('#TitleButton').on('click', async () => {
-        if (GM_getValue("minChance",0) && !targetChance) {
+        if (GM_getValue("minChance",50) && !targetChance) {
             await getAction({
                 type: 'get',
                 action: 'revive.php',
@@ -41,7 +41,7 @@
                              $("#TitleButton").attr("value", "ED available.");
                         } else if (msg.msg.indexOf("%</b> chance")>0) {
                             targetChance = parseFloat(msg.msg.substring(msg.msg.indexOf("%</b> chance")-6,msg.msg.indexOf("%</b> chance")).replace(">",""));
-                            $("#TitleButton").attr("value", targetChance+"% chance");
+                            $("#TitleButton").attr("value", "Chance\nchecked.");
                         } else if (msg.msg.startsWith("This user")) {
                             $("#TitleButton").attr("value", "Out of hosp.");
                         }
@@ -51,40 +51,42 @@
                 }
             });
         } else {
-            if (targetChance >= GM_getValue("minChance",0)) {
-                await getAction({
-                    type: 'get',
-                    action: 'revive.php',
-                    data: {
-                        action: 'revive',
-                        step: 'revive',
-                        ID: location.href.match(/[0-9]+/)[0]
-                    },
-                    success: (str) => {
-                        try {
-                            const msg = JSON.parse(str);
-                            if (msg.msg.substring(26).startsWith("success")) {
-                                $("#TitleButton").attr("value", "Success!");
-                                targetChance = 0;
-                                failCounter = 0;
-                                a.play();
-                            } else if (msg.msg.substring(24).startsWith("attempt")) {
-                                failCounter++;
-                                $("#TitleButton").attr("value", "Fail ("+failCounter+")");
-                            } else if (msg.msg.startsWith("This user")) {
-                                $("#TitleButton").attr("value", "Out of hosp.");
-                            } else if (msg.msg.startsWith("This person")) {
-                                $("#TitleButton").attr("value", "Revs off.");
-                                targetChance = 0;
+            await getAction({
+                type: 'get',
+                action: 'revive.php',
+                data: {
+                    action: 'revive',
+                    step: 'revive',
+                    ID: location.href.match(/[0-9]+/)[0]
+                },
+                success: (str) => {
+                    try {
+                        const msg = JSON.parse(str);
+                        if (msg.msg.startsWith("This person")) {
+                            $("#TitleButton").attr("value", "Revs off.");
+                            targetChance = 0;
+                        } else {
+                            if (targetChance >= GM_getValue("minChance",50)) {
+                                if (msg.msg.substring(26).startsWith("success")) {
+                                    $("#TitleButton").attr("value", "Success!");
+                                    targetChance = 0;
+                                    failCounter = 0;
+                                    a.play();
+                                } else if (msg.msg.substring(24).startsWith("attempt")) {
+                                    failCounter++;
+                                    $("#TitleButton").attr("value", "Fail ("+failCounter+")");
+                                } else if (msg.msg.startsWith("This user")) {
+                                    $("#TitleButton").attr("value", "Out of hosp.");
+                                }
+                            } else {
+                                $("#TitleButton").attr("value", targetChance+"% is below\n"+GM_getValue("minChance",50)+"% min.");
                             }
-                        } catch (e) {
-                            console.log(e);
                         }
+                    } catch (e) {
+                        console.log(e);
                     }
-                });
-            } else {
-                $("#TitleButton").attr("value", targetChance+"% is below\n"+GM_getValue("minChance",0)+"% min.");
-            }
+                }
+            });
         }
     });
 
@@ -96,5 +98,4 @@
             console.log(e);
         }
     });
-
 })();
