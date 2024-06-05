@@ -17,7 +17,7 @@
     let failCounter = 0;
 
     //let a = new Audio("https://www.torn.com/casino/wof/sound/win-1.ogg");
-    let a = new Audio("https://www.torn.com/casino/highlow/audio/cashin.ogg");
+    //let a = new Audio("https://www.torn.com/casino/highlow/audio/cashin.ogg");
     //let a = new Audio("https://www.torn.com/casino/keno/audio/roundwon.ogg");
     //let a = new Audio("https://www.torn.com/casino/blackjack/audio/win.ogg");
 
@@ -71,7 +71,7 @@
                                     $("#TitleButton").attr("value", "Success!");
                                     targetChance = 0;
                                     failCounter = 0;
-                                    a.play();
+                                    //a.play();
                                 } else if (msg.msg.substring(24).startsWith("attempt")) {
                                     failCounter++;
                                     $("#TitleButton").attr("value", "Fail ("+failCounter+")");
