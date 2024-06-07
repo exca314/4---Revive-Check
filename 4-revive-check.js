@@ -16,11 +16,6 @@
     let targetChance = 0;
     let failCounter = 0;
 
-    //let a = new Audio("https://www.torn.com/casino/wof/sound/win-1.ogg");
-    //let a = new Audio("https://www.torn.com/casino/highlow/audio/cashin.ogg");
-    //let a = new Audio("https://www.torn.com/casino/keno/audio/roundwon.ogg");
-    //let a = new Audio("https://www.torn.com/casino/blackjack/audio/win.ogg");
-
     $('body').append('<input type="button" value="Revive" id="TitleButton">');
     $("#TitleButton").css("position", "fixed").css("top", 300).css("right", 0).css("height","70px").css("width","120px").css("border-radius", "10px 0px 0px 10px").css("border-width","thick").css("box-shadow","0px 0px 5px -1px").css("font-size","13px");
 
@@ -71,7 +66,6 @@
                                     $("#TitleButton").attr("value", "Success!");
                                     targetChance = 0;
                                     failCounter = 0;
-                                    //a.play();
                                 } else if (msg.msg.substring(24).startsWith("attempt")) {
                                     failCounter++;
                                     $("#TitleButton").attr("value", "Fail ("+failCounter+")");
