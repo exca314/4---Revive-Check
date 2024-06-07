@@ -51,22 +51,22 @@
                 }
             });
         } else {
-            await getAction({
-                type: 'get',
-                action: 'revive.php',
-                data: {
-                    action: 'revive',
-                    step: 'revive',
-                    ID: location.href.match(/[0-9]+/)[0]
-                },
-                success: (str) => {
-                    try {
-                        const msg = JSON.parse(str);
-                        if (msg.msg.startsWith("This person")) {
-                            $("#TitleButton").attr("value", "Revs off.");
-                            targetChance = 0;
-                        } else {
-                            if (targetChance >= GM_getValue("minChance",50)) {
+            if (targetChance >= GM_getValue("minChance",50)) {
+                await getAction({
+                    type: 'get',
+                    action: 'revive.php',
+                    data: {
+                        action: 'revive',
+                        step: 'revive',
+                        ID: location.href.match(/[0-9]+/)[0]
+                    },
+                    success: (str) => {
+                        try {
+                            const msg = JSON.parse(str);
+                            if (msg.msg.startsWith("This person")) {
+                                $("#TitleButton").attr("value", "Revs off.");
+                                targetChance = 0;
+                            } else {
                                 if (msg.msg.substring(26).startsWith("success")) {
                                     $("#TitleButton").attr("value", "Success!");
                                     targetChance = 0;
@@ -78,15 +78,16 @@
                                 } else if (msg.msg.startsWith("This user")) {
                                     $("#TitleButton").attr("value", "Out of hosp.");
                                 }
-                            } else {
-                                $("#TitleButton").attr("value", targetChance+"% is below\n"+GM_getValue("minChance",50)+"% min.");
                             }
+                        } catch (e) {
+                            console.log(e);
                         }
-                    } catch (e) {
-                        console.log(e);
                     }
-                }
-            });
+                });
+            } else {
+                $("#TitleButton").attr("value","Chance is below\n"+GM_getValue("minChance",50)+"% min.");
+                targetChance = 0;
+            }
         }
     });
 
